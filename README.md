@@ -75,7 +75,7 @@ python manage.py load_genre_title
 ```
 python manage.py runserver
 ```
-## Пример запросов:
+## Примеры запросов:
 
 Все примеры доступны в документации:
 ```
