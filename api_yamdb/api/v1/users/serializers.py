@@ -10,16 +10,10 @@ class UsersSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'first_name', 'last_name',
                   'bio', 'role')
 
-
-class CreateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ('username', 'email')
-        model = User
-
-    def validate(self, validated_data):
-        user = User(**validated_data)
-        user.clean()
-        return validated_data
+    def validate_username(self, value):
+        if value == 'me':
+            raise serializers.ValidationError('me зарегистрировано системой')
+        return value
 
     def validate_email(self, value):
         norm_email = value.lower()
@@ -28,6 +22,12 @@ class CreateUserSerializer(serializers.ModelSerializer):
         return norm_email
 
 
+class CreateUserSerializer(UsersSerializer):
+    class Meta:
+        fields = ('username', 'email')
+        model = User
+
+
 class JWTTokenSerializer(serializers.Serializer):
-    confirmation_code = serializers.CharField(required=True)
-    username = serializers.CharField(required=True)
+    confirmation_code = serializers.CharField()
+    username = serializers.CharField()

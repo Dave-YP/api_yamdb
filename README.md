@@ -3,7 +3,7 @@
 1. [Описание проекта](#описание-проекта)
 2. [Ресурсы API YaMDb](#ресурсы-api-yamdb)
 3. [Как запустить проект](#как-запустить-проект)
-4. [Примеры запросов](#примеры-запросов)
+4. [Примеры запросов](#пример-запроса)
 5. [Стек технологий](#стек-технологий)
 6. [Авторы](#авторы)
 
@@ -11,7 +11,7 @@
 
 Проект YaMDb собирает отзывы пользователей на различные произведения. 
 
-## Ресурсы API YaMDb:
+## Ресурсы API YaMDb
 
 - Ресурс auth: аутентификация.
 - Ресурс users: пользователи.
@@ -67,7 +67,7 @@ python3 manage.py migrate
 
 Добавить данные из csv: 
 python manage.py load_csv_data
-python manage.py load_genre_title
+python manage.py load_genretitle
 ```
 
 Запустить проект:
@@ -75,13 +75,13 @@ python manage.py load_genre_title
 ```
 python manage.py runserver
 ```
-## Примеры запросов:
+## Пример запроса
 
 Все примеры доступны в документации:
 ```
 http://127.0.0.1:8000/redoc/
 ```
-## Стек технологий:
+## Стек технологий
 - Django REST Framework
 - библиотека django-filter
 - библиотека Simple JWT
@@ -89,6 +89,6 @@ http://127.0.0.1:8000/redoc/
 - SQLite3
 ## Авторы:
 
-- [pavelkor91](https://github.com/pavelkor91)  
-- [Dave-YP](https://github.com/Dave-YP)
-- [Xaliy](https://github.com/Xaliy)
+- [pavelkor91](https://github.com/pavelkor91) Модели, вью и эндпойнты для пользователя. Система регистрации и аутентификации, права доступа, работа с токеном.
+- [Dave-YP](https://github.com/Dave-YP). Модели, вью и эндпойнты для произведений, категорий и жанров. Заполнение базы из CSV файлов. 
+- [Xaliy](https://github.com/Xaliy). Модели, вью и эндпойнты для отзывов и комментариев. Рейтинг для произведений.

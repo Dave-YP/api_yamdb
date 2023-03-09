@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -32,7 +33,7 @@ class Category(models.Model):
     slug = models.SlugField(
         verbose_name='Cлаг',
         unique=True,
-        max_length=50
+        max_length=settings.DEFAULT_FIELD_SIZE
     )
 
     class Meta:
@@ -48,13 +49,13 @@ class Genre(models.Model):
 
     name = models.CharField(
         verbose_name='Жанр',
-        max_length=50,
+        max_length=256,
         db_index=True
     )
     slug = models.SlugField(
         verbose_name='Слаг',
         unique=True,
-        max_length=50
+        max_length=settings.DEFAULT_FIELD_SIZE
     )
 
     class Meta:
@@ -146,7 +147,7 @@ class Review(BaseDate):
         ]
 
     def __str__(self):
-        return self.text[:50]
+        return self.text[:settings.DEFAULT_FIELD_SIZE]
 
 
 class Comment(BaseDate):
@@ -175,4 +176,4 @@ class Comment(BaseDate):
         ordering = ['-pub_date']
 
     def __str__(self):
-        return self.text[:50]
+        return self.text[:settings.DEFAULT_FIELD_SIZE]

@@ -1,13 +1,13 @@
-from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import get_object_or_404
 
 from api.v1.permissions import IsOwnerAdminModeratorOrReadOnly
 from reviews.models import Review, Title
 from .serializers import CommentSerializer, ReviewSerializer
+from api.v1.mixins import NoPutModelViewSet
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(NoPutModelViewSet):
     """Вьюсет для класса Review."""
 
     serializer_class = ReviewSerializer
@@ -23,7 +23,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, title=title)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(NoPutModelViewSet):
     """Вьюсет для класса Comment."""
 
     serializer_class = CommentSerializer

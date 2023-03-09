@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -18,12 +19,13 @@ class User(AbstractUser):
     )
     email = models.EmailField(
         verbose_name='E-mail',
+        null=False,
         blank=False,
         max_length=254,
         unique=True
     )
     role = models.CharField(
-        max_length=50,
+        max_length=settings.DEFAULT_FIELD_SIZE,
         choices=ROLES,
         default=USER,
     )

@@ -1,5 +1,4 @@
 from django.db.models import Avg
-from rest_framework import viewsets
 
 from reviews.models import Title
 from api.v1.permissions import IsAdminOrReadOnly
@@ -8,9 +7,10 @@ from .serializers import (
     TitleReadSerializer,
     TitleWriteSerializer,
 )
+from api.v1.mixins import NoPutModelViewSet
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(NoPutModelViewSet):
     """Вьюсет для класса Title."""
 
     queryset = Title.objects.annotate(rating=Avg('reviews__score')).all()

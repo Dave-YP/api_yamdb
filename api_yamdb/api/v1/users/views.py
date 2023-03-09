@@ -1,11 +1,9 @@
 from http import HTTPStatus
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, permissions, viewsets
+from rest_framework import filters, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
@@ -13,19 +11,19 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .serializers import (CreateUserSerializer, JWTTokenSerializer,
                           UsersSerializer)
 from api.v1.permissions import IsAdmin
-
+from api.v1.mixins import NoPutModelViewSet
+from .utils import send_code
 
 User = get_user_model()
 
 
-class UsersViewSet(viewsets.ModelViewSet):
+class UsersViewSet(NoPutModelViewSet):
     queryset = User.objects.all()
     permission_classes = [IsAdmin]
     serializer_class = UsersSerializer
     lookup_field = 'username'
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
-    http_method_names = ("get", "post", "delete", "patch")
 
     @action(methods=['patch', 'get'], detail=False,
             permission_classes=[permissions.IsAuthenticated],
@@ -48,20 +46,21 @@ def create_user(request):
         username=request.data.get('username'),
         email=request.data.get('email')
     ).exists():
+        send_code(
+            User.objects.get(
+                username=request.data.get('username'),
+                email=request.data.get('email')
+            ),
+            request.data.get('email')
+        )
         return Response(request.data, status=HTTPStatus.OK)
     serializer = CreateUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     email = serializer.validated_data.get('email')
     username = serializer.validated_data.get('username')
     serializer.save()
-    code = default_token_generator.make_token(
-        User.objects.get(email=email, username=username)
-    )
-    email_message = (f'Код подтверждения: {code}')
-    send_mail(message=email_message,
-              subject='Код подтвереждения',
-              recipient_list=[email],
-              from_email=settings.DEFAULT_FROM_EMAIL)
+    user = User.objects.get(email=email, username=username)
+    send_code(user, email)
     return Response(serializer.data, status=HTTPStatus.OK)
 
 
@@ -76,10 +75,10 @@ def get_jwt_token(request):
     if default_token_generator.check_token(user, code):
         token = AccessToken.for_user(user)
         return Response(
-            data={'token': str(token)},
+            data={'token': token},
             status=HTTPStatus.OK
         )
     return Response(
-        f'{code}: Неверный код подтверждения',
+        {code: 'Неверный код подтверждения'},
         status=HTTPStatus.BAD_REQUEST
     )

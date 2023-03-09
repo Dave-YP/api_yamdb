@@ -5,9 +5,11 @@ from api.v1.category_genres.serializers import (
     CategorySerializer,
     GenreSerializer
 )
+from reviews.validators import year_validator
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
+    year = serializers.IntegerField(validators=[year_validator])
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug'

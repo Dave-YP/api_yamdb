@@ -1,16 +1,20 @@
+import sys
 import os
-
+from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
-from pathlib import Path
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-SECRET_KEY = SECRET_KEY = str(os.getenv('SECRET_KEY'))
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
-DEBUG = False
+if not SECRET_KEY:
+    sys.exit(-1)
+
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -110,7 +114,7 @@ AUTH_USER_MODEL = 'users.User'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 DEFAULT_FROM_EMAIL = 'test@test.com'
-
+DEFAULT_FIELD_SIZE = 50
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
